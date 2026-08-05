@@ -42,7 +42,7 @@
                 <!-- Input: Display Name (Step 1) -->
                 <div>
                     <label class="block text-sm font-bold text-emerald-300 mb-1" data-i18n="issuerLabel">1️⃣ 自訂名稱 (幫這把鑰匙取個名字)</label>
-                    <input type="text" id="issuer" placeholder="家庭聊天" autocomplete="off" spellcheck="false" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors">
+                    <input type="text" id="issuer" placeholder="家庭聊天" autocomplete="off" spellcheck="false" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors">
                     <p class="text-xs text-slate-500 mt-1" data-i18n="issuerDesc">顯示在驗證器 APP 上的名字，讓您知道這是用來做什麼的（例如：家庭聊天）。</p>
                 </div>
 
@@ -50,7 +50,7 @@
                 <div>
                     <label class="block text-sm font-bold text-emerald-300 mb-1" data-i18n="secretLabel">2️⃣ Base32 密鑰 (Secret Key)</label>
                     <div class="flex gap-2">
-                        <input type="text" id="secret" name="totp-secret" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 font-mono text-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 uppercase transition-colors" placeholder="JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP...">
+                        <input type="text" id="secret" name="totp-secret" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 font-mono text-emerald-300 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 uppercase transition-colors" placeholder="JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP...">
                         <button onclick="generateRandomSecret()" class="bg-slate-600 hover:bg-slate-500 text-white px-4 py-2 rounded-lg transition-colors shrink-0" title="Generate Random Secret">🎲</button>
                     </div>
                     <p class="text-xs text-slate-500 mt-1" data-i18n="secretDesc">核心密碼。點擊 🎲 產生新密碼，或貼上您現有的密碼。</p>
@@ -69,16 +69,24 @@
             <div id="output-container" class="mt-8 flex flex-col items-center w-full border-t border-slate-700 pt-6 invisible opacity-0">
                 <!-- Share Card Design -->
                 <div class="bg-white p-6 rounded-xl shadow-inner mb-4 relative group flex flex-col items-center w-full max-w-sm">
-                    <div id="qrcode" class="mb-4 w-[208px] h-[208px] flex items-center justify-center"></div>
-                    <!-- Hover Copy Button -->
-                    <button onclick="copyQRCode()" class="absolute top-2 right-2 bg-slate-800/80 hover:bg-slate-700 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-md" title="Copy QR Image">
+                    <div id="qrcode" class="mb-4 w-[208px] h-[208px] flex items-center justify-center qr-touch-target"></div>
+                    <!-- Desktop hover copy only — hidden on touch so it won't block iPhone long-press -->
+                    <button type="button" onclick="copyQRCode()" class="qr-copy-btn absolute top-2 right-2 bg-slate-800/80 hover:bg-slate-700 text-white p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm shadow-md" title="Copy QR Image">
                         📋
                     </button>
                     <!-- Direct Scan & Share Instructions -->
                     <div class="text-center w-full border-t border-slate-200 pt-3 mt-1">
-                        <p class="text-sm text-slate-800 font-bold mb-1" data-i18n="qrScanInstruction">
-                            4️⃣ 掃描：請使用 <strong>Google Authenticator</strong> 或是 <strong>Apple 手機內建相機</strong> 掃描
+                        <p class="text-sm text-slate-800 font-bold mb-1 text-left" data-i18n="qrScanInstruction">
+                            4️⃣ 加入驗證器：
                         </p>
+                        <div class="text-left space-y-2 mt-2 mb-2">
+                            <p class="text-xs text-blue-700 font-bold bg-blue-50 py-1.5 px-2 rounded" data-i18n="qrIphoneStep">
+                                🍎 <strong>iPhone：</strong>長按上方 QR Code，在彈出視窗最下方選擇加入 <strong>Apple「密碼」</strong>
+                            </p>
+                            <p class="text-xs text-emerald-700 font-bold bg-emerald-50 py-1.5 px-2 rounded" data-i18n="qrAndroidStep">
+                                🤖 <strong>Android：</strong>點下方 <strong>「複製」</strong>，再貼到 <strong>Google Authenticator</strong> 手動新增帳號
+                            </p>
+                        </div>
                         <p class="text-xs text-emerald-600 font-bold bg-emerald-50 py-1.5 px-2 rounded mt-2 mb-2" data-i18n="qrShareInstruction">
                             👨‍👩‍👧‍👦 請將此畫面分享給家人一起掃描！
                         </p>
@@ -87,10 +95,10 @@
                         </p>
                     </div>
 
-                    <!-- Manual Entry for Mobile -->
+                    <!-- Manual Entry for Mobile (Android paste path) -->
                     <div class="mt-4 pt-4 border-t border-slate-200 w-full text-left">
                         <p class="text-xs text-slate-500 font-bold mb-1.5" data-i18n="manualEntryTitle">
-                            🔤 在手機上操作？手動複製密鑰：
+                            🤖 Android：複製密鑰後貼到 Google Authenticator
                         </p>
                         <div class="flex items-center bg-slate-100 p-2 rounded-md border border-slate-200">
                             <code id="display-secret" class="text-slate-700 font-mono text-xs tracking-wider flex-1 overflow-hidden whitespace-nowrap text-ellipsis"></code>
@@ -126,13 +134,6 @@
                     <p class="text-[11px] text-slate-500 mt-2 bg-slate-800/50 py-1 px-2 rounded inline-block" data-i18n="timerNote">⏳ 此代碼每 30 秒自動更新</p>
                 </div>
 
-                <!-- Tip Box -->
-                <div class="mt-4 p-4 bg-slate-900/50 w-full max-w-sm rounded-lg border border-emerald-900/50">
-                    <p class="text-xs text-slate-400 leading-relaxed" data-i18n="proTip">
-                        <strong class="text-emerald-400">💡 專業提示：</strong> 
-                        請妥善保存您的密鑰！如果手機遺失，在新手機的驗證器中輸入此密鑰即可恢復存取權限。
-                    </p>
-                </div>
             </div>
         </div>
 
@@ -173,13 +174,14 @@
                 secretDesc: "The core password. Click the 🎲 to make a new one, or paste yours.",
                 secretSecurity: "🔒 Uses browser CSPRNG (crypto.getRandomValues) for military-grade 256-bit randomness.",
                 generateBtn: "3️⃣ Generate QR Code ✨",
-                qrScanInstruction: "4️⃣ Scan: Use <strong>Google Authenticator</strong> or your <strong>iPhone's built-in camera</strong>",
+                qrScanInstruction: "4️⃣ Add to authenticator:",
+                qrIphoneStep: "🍎 <strong>iPhone:</strong> Long-press the QR code above, then at the bottom of the sheet choose add to <strong>Apple Passwords</strong>",
+                qrAndroidStep: "🤖 <strong>Android:</strong> Tap <strong>Copy</strong> below, then paste the key into <strong>Google Authenticator</strong> (manual entry)",
                 qrShareInstruction: "👨‍👩‍👧‍👦 Share this screen with your family so they can scan it too!",
                 verifyInstruction: "5️⃣ <strong>Verify:</strong> Ask each other for the 6-digit code when chatting!",
-                manualEntryTitle: "🔤 On mobile? Manually copy key:",
+                manualEntryTitle: "🤖 Android: Copy the key, then paste into Google Authenticator",
                 copyKeyBtn: "📋 Copy",
                 previewTitle: "📱 Authenticator Preview",
-                proTip: "<strong class='text-emerald-400'>💡 Pro Tip:</strong> Save your Secret Key! If you ever lose your phone, typing this exact key into a new authenticator app will restore your access.",
                 downloadTitle: "<span>📥</span> Download Google Authenticator",
                 downloadBtn: "Tap or Scan to Download",
                 issuerPlaceholder: "Family Chat",
@@ -206,13 +208,14 @@
                 secretDesc: "核心密碼。點擊 🎲 產生新密碼，或貼上您現有的密碼。",
                 secretSecurity: "🔒 使用瀏覽器底層 CSPRNG (crypto.getRandomValues) 產生軍規級 256-bit 真實隨機數。",
                 generateBtn: "3️⃣ 產生 QR Code ✨",
-                qrScanInstruction: "4️⃣ 掃描：請使用 <strong>Google Authenticator</strong> 或是 <strong>Apple 手機內建相機</strong> 掃描",
+                qrScanInstruction: "4️⃣ 加入驗證器：",
+                qrIphoneStep: "🍎 <strong>iPhone：</strong>長按上方 QR Code，在彈出視窗最下方選擇加入 <strong>Apple「密碼」</strong>",
+                qrAndroidStep: "🤖 <strong>Android：</strong>點下方 <strong>「複製」</strong>，再貼到 <strong>Google Authenticator</strong> 手動新增帳號",
                 qrShareInstruction: "👨‍👩‍👧‍👦 請將此畫面分享給家人一起掃描！",
                 verifyInstruction: "5️⃣ <strong>驗證：</strong>聊天時互相核對 6 位數代碼，確認是本人！",
-                manualEntryTitle: "🔤 在手機上操作？手動複製密鑰：",
+                manualEntryTitle: "🤖 Android：複製密鑰後貼到 Google Authenticator",
                 copyKeyBtn: "📋 複製",
                 previewTitle: "📱 驗證器預覽",
-                proTip: "<strong class='text-emerald-400'>💡 專業提示：</strong> 請妥善保存您的密鑰！如果手機遺失，在新手機的驗證器中輸入此密鑰即可恢復存取權限。",
                 downloadTitle: "<span>📥</span> 下載 Google Authenticator",
                 downloadBtn: "點擊或掃描下載",
                 issuerPlaceholder: "家庭聊天",
@@ -444,7 +447,10 @@
                     
                     const paddedImg = document.createElement('img');
                     paddedImg.src = paddedCanvas.toDataURL("image/png");
-                    paddedImg.className = "rounded-xl block mx-auto"; // 加上圓角更美觀
+                    paddedImg.alt = "2FA TOTP QR Code";
+                    // Real <img> so iOS can long-press → Open in Passwords (otpauth QR)
+                    paddedImg.className = "rounded-xl block mx-auto qr-image";
+                    paddedImg.setAttribute("draggable", "false");
                     
                     qrContainer.innerHTML = ""; // 清除無邊框的舊圖
                     paddedCanvas.style.display = "none"; // 隱藏新 Canvas (供複製)

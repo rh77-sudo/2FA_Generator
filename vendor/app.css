@@ -20,6 +20,37 @@ input {
   font: inherit;
 }
 
+/* Dark form fields: force light text (browser default is often black) */
+input[type="text"],
+input:not([type]),
+textarea {
+  color: #ffffff;
+  caret-color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+  -webkit-text-fill-color: #94a3b8;
+}
+
+/* Secret field keeps emerald value color */
+#secret {
+  color: #6ee7b7;
+  -webkit-text-fill-color: #6ee7b7;
+  caret-color: #6ee7b7;
+}
+
+#secret::placeholder {
+  color: #64748b;
+  -webkit-text-fill-color: #64748b;
+}
+
+.placeholder-slate-400::placeholder { color: #94a3b8; -webkit-text-fill-color: #94a3b8; }
+.placeholder-slate-500::placeholder { color: #64748b; -webkit-text-fill-color: #64748b; }
+
 a {
   color: inherit;
 }
@@ -252,6 +283,50 @@ code {
 }
 #toast.-translate-y-4 {
   transform: translateX(-50%) translateY(-1rem);
+}
+
+/* QR: keep long-press working on iPhone (Passwords app sheet) */
+.qr-touch-target {
+  -webkit-user-select: auto;
+  user-select: auto;
+  -webkit-touch-callout: default;
+  touch-action: manipulation;
+}
+
+.qr-image {
+  max-width: 100%;
+  height: auto;
+  -webkit-user-select: auto;
+  user-select: auto;
+  -webkit-touch-callout: default;
+  /* Avoid accidental drag that can cancel long-press recognition */
+  -webkit-user-drag: none;
+  pointer-events: auto;
+}
+
+/* Copy control only when a fine pointer can hover — never steal iPhone long-press */
+.qr-copy-btn {
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .qr-copy-btn {
+    pointer-events: auto;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .qr-copy-btn {
+    display: none !important;
+  }
+}
+
+.text-blue-700 { color: #1d4ed8; }
+.bg-blue-50 { background-color: #eff6ff; }
+.text-emerald-700 { color: #047857; }
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.5rem;
 }
 
 /* Version badge */
