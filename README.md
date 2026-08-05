@@ -20,11 +20,10 @@ https://rh77-sudo.github.io/2FA_Generator/
 
 ## Run locally
 
-Open `index.html` (or `2FA_Generator.html`) in a browser. No build step, no server required.
+Open `index.html` in a browser. No build step, no server required.
 
 ```
 index.html
-2FA_Generator.html   # same app
 vendor/
   app.css
   qrcode.min.js
